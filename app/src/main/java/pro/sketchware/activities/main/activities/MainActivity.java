@@ -390,7 +390,11 @@ public class MainActivity extends BasePermissionAppCompatActivity {
     public void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         drawerToggle.syncState();
-        FirebaseMessaging.getInstance().subscribeToTopic("all");
+        try {
+            FirebaseMessaging.getInstance().subscribeToTopic("all");
+        } catch (IllegalStateException e) {
+            showFirebaseNotConfiguredDialog();
+        }
     }
 
     @Override
@@ -492,5 +496,13 @@ public class MainActivity extends BasePermissionAppCompatActivity {
         if (xB.b().b(getApplicationContext())) {
             SketchwareUtil.toast(Helper.getResString(R.string.message_strings_xml_loaded));
         }
+    }
+
+    private void showFirebaseNotConfiguredDialog() {
+        new MaterialAlertDialogBuilder(this)
+                .setTitle("Firebase not configured")
+                .setMessage("Firebase is not configured correctly. Some features may not be available.")
+                .setPositiveButton("Ok", (dialog, which) -> dialog.dismiss())
+                .show();
     }
 }
